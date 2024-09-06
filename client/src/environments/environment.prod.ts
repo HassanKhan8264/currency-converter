@@ -4,7 +4,7 @@ export const environment = {
   production: true,
   server: {
     self: {
-      HOST: "https://example.com",
+      HOST: "https://currency-converter-eta-seven.vercel.app",
       getUrl() {
         return `${this.HOST}`;
       },
