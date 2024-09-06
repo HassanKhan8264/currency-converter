@@ -13,7 +13,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Use the currency router
 app.use("/", currencyRouter);
 
 app.listen(config.PORT, () => {
