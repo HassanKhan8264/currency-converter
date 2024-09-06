@@ -7,18 +7,12 @@ const app = express();
 
 
 // // Define allowed origins
-app.use(
-  cors({
-    origin: [
-      "http://localhost:4200",  // Local development
-      "https://currency-converter-eta-seven.vercel.app", // Allowed origin for your frontend
-      "https://currency-converter-qaze.vercel.app" // Another allowed origin
-    ],
-    methods: ["GET", "POST"],  // Allowed HTTP methods
-  })
-);
+const corsOptions = {
+  origin: ['http://localhost:4200',],
+  optionsSuccessStatus: 200
+};
 
-
+app.use(cors(corsOptions));
 // Use the currency router
 app.use("/", currencyRouter);
 
