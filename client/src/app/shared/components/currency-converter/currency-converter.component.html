@@ -1,43 +1,51 @@
 <div class="container">
-    <div class="card">
-      <div class="card-header">Currency Converter</div>
-      <div class="card-body">
-        <form [formGroup]="conversionForm" (ngSubmit)="convertCurrency()">
-          <div class="form-group">
-            <mat-form-field>
-              <mat-label>From Currency</mat-label>
-              <mat-select formControlName="fromCurrency" required>
-                <mat-option *ngFor="let currency of currencies" [value]="currency">
-                  {{currency}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-  
-            <mat-form-field>
-              <mat-label>To Currency</mat-label>
-              <mat-select formControlName="toCurrency" required>
-                <mat-option *ngFor="let currency of currencies" [value]="currency">
-                  {{currency}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-  
-            <mat-form-field>
-              <input matInput placeholder="Amount" formControlName="amount" type="number" required />
-            </mat-form-field>
-  
-            <button mat-raised-button color="primary" type="submit" [disabled]="conversionForm.invalid">Convert</button>
-          </div>
-        </form>
-  
-        <div *ngIf="loading" class="loader">Loading...</div>
-  
-        <div *ngIf="conversionResult">
-          <h3>Conversion Result</h3>
-          <p>{{conversionForm.value.amount}} {{conversionForm.value.fromCurrency}} = {{conversionResult.convertedAmount}} {{conversionForm.value.toCurrency}}</p>
-          <p>Rate: {{conversionResult.rate?.symbol}} {{conversionResult.rate?.name}}</p>
+  <div class="card">
+    <div class="card-header">Currency Converter</div>
+    <div class="card-body">
+      <form [formGroup]="conversionForm" (ngSubmit)="convertCurrency()">
+        <div class="form-group">
+          <mat-form-field>
+            <mat-label>From Currency</mat-label>
+            <mat-select formControlName="fromCurrency" required>
+              <mat-option *ngFor="let currency of currencies" [value]="currency">
+                {{currency}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>To Currency</mat-label>
+            <mat-select formControlName="toCurrency" required>
+              <mat-option *ngFor="let currency of currencies" [value]="currency">
+                {{currency}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Amount" formControlName="amount" type="number" required />
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="conversionForm.invalid">Convert</button>
         </div>
+      </form>
+
+      <div *ngIf="loading" class="loader">Loading...</div>
+
+      <div *ngIf="conversionResult">
+        <h3>Conversion Result</h3>
+        <p>{{conversionForm.value.amount}} {{conversionForm.value.fromCurrency}} = {{conversionResult.convertedAmount}} {{conversionForm.value.toCurrency}}</p>
+        <p>Rate: {{conversionForm.value.amount}} {{singleCurrency.fromSymbol}} {{conversionForm.value.fromCurrency}} = {{singleCurrency.toSymbol}} {{conversionResult.rate}}</p>
+      </div>
+
+      <div *ngIf="conversionHistory.length > 0">
+        <h3>Conversion History</h3>
+        <ul>
+          <li *ngFor="let record of conversionHistory">
+            {{ record.date }}: {{ record.amount }} {{ record.fromCurrency }} ({{ record.fromSymbol }}) = {{ record.convertedAmount }} {{ record.toCurrency }} ({{ record.toSymbol }})
+          </li>
+        </ul>
       </div>
     </div>
   </div>
-  
+</div>

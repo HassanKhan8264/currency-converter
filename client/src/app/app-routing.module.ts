@@ -5,8 +5,6 @@ import { CurrencyConverterComponent } from './shared/components/currency-convert
 const routes: Routes = [
   { path: '', redirectTo: '/converter', pathMatch: 'full' },
   { path: 'converter', component: CurrencyConverterComponent},
-  // { path: 'history', loadChildren: () => import('./history/history.module').then(m => m.HistoryModule) },
-  { path: '**', redirectTo: '/converter', pathMatch: 'full' } // Default route to converter page
 ];
 
 @NgModule({

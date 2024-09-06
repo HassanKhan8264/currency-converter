@@ -1,64 +1,54 @@
 const express = require('express');
 const axios = require('axios');
-const app = express();
-const API_BASE_URL = 'https://api.freecurrencyapi.com/v1/currencies';
-const API_KEY = '4E0VK7BnkdeUuh1vegAt808v2IUjzUR6lxcvBMT2';
 const cors = require('cors');
 
-app.use(cors())
+const app = express();
+const API_KEY = '4E0VK7BnkdeUuh1vegAt808v2IUjzUR6lxcvBMT2';
+const EXCHANGE_RATE_URL = 'https://api.freecurrencyapi.com/v1/latest';
+const API_URL = 'https://api.freecurrencyapi.com/v1/currencies';
+
+app.use(cors());
+
 // Endpoint to fetch currency data
 app.get('/currencies', async (req, res) => {
-    const { currencies } = req.query;
-    try {
-        // Fetch all currency data
-        const response = await axios.get(`${API_BASE_URL}?apikey=${API_KEY}`);
-        const allCurrencies = response.data.data;
-
-        // If specific currencies are requested, filter them
-        if (currencies) {
-            const codes = currencies.split(',').map(code => code.trim().toUpperCase());
-            const filteredCurrencies = {};
-            codes.forEach(code => {
-                if (allCurrencies[code]) {
-                    filteredCurrencies[code] = allCurrencies[code];
-                }
-            });
-            res.json({ data: filteredCurrencies });
-        } else {
-            res.json({ data: allCurrencies });
-        }
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching currency data', error: error.message });
-    }
+  try {
+    const response = await axios.get(`https://api.freecurrencyapi.com/v1/currencies?apikey=${API_KEY}`);
+    res.json({ data: response.data.data });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching currency data', error: error.message });
+  }
 });
 
 // Endpoint to convert currency
 app.get('/convert', async (req, res) => {
-    const { from, to, amount } = req.query;
-    try {
-        // Fetch exchange rate data from the API
-        const response = await axios.get(`${API_BASE_URL}?apikey=${API_KEY}&base_currency=${from}`);
-        const rates = response.data.data;
+  const { from, to, amount } = req.query;
+  try {
+    // Fetch exchange rate data from the API
+    const response = await axios.get(`${EXCHANGE_RATE_URL}?apikey=${API_KEY}&base_currency=${from}`);
+    const rates = response.data.data;
 
-        // Perform conversion
-        const conversionRate = rates[to] ? rates[to].rate : null;
-        const convertedAmount = conversionRate ? amount * conversionRate : null;
+    // Perform conversion
+    if (rates[to]) {
+      const conversionRate = rates[to];
+      const convertedAmount = (amount * conversionRate).toFixed(2); // Convert and format to two decimal places
 
-        // Send the response with the required structure
-        res.json({
-            from,
-            to,
-            amount,
-            convertedAmount,
-            rate: rates[to] || null
-        });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching currency data', error: error.message });
+      res.json({
+        from,
+        to,
+        amount,
+        convertedAmount,
+        rate: conversionRate
+      });
+    } else {
+      res.status(404).json({ message: 'Currency not found' });
     }
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching currency data', error: error.message });
+  }
 });
 
 // Start the server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
