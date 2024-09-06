@@ -2,11 +2,12 @@ const express = require("express");
 const axios = require("axios");
 const config = require("./config");
 const router = express.Router();
+const url = "https://currency-converter-eta-seven.vercel.app"
 
 router.get("/currencies", async (req, res) => {
   try {
     const response = await axios.get(
-      `${config.EXCHANGE_RATE_URL}?apikey=${config.API_KEY}`
+      `${url}?apikey=${config.API_KEY}`
     );
     res.json({ data: response.data.data });
   } catch (error) {
@@ -19,7 +20,7 @@ router.get("/convert", async (req, res) => {
   const { from, to, amount } = req.query;
   try {
     const response = await axios.get(
-      `${config.EXCHANGE_RATE_URL}?apikey=${config.API_KEY}&base_currency=${from}`
+      `${url}?apikey=${config.API_KEY}&base_currency=${from}`
     );
     const rates = response.data.data;
 
