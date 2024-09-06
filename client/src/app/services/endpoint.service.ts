@@ -15,10 +15,10 @@ export class EndpointService {
     currency() {
         return {
             getCurrencies: () => {
-                return this._http.get(`${this.URL}/currencies`);
+                return this._http.get(`${this.URL}currencies`);
             },
             convertCurrency: (fromCurrency: any, toCurrency: any, amount: number) => {
-                return this._http.get(`${this.URL}/convert?from=${fromCurrency}&to=${toCurrency}&amount=${amount}`);
+                return this._http.get(`${this.URL}convert?from=${fromCurrency}&to=${toCurrency}&amount=${amount}`);
             },
         };
     }
