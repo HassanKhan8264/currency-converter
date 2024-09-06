@@ -3,7 +3,7 @@ const currencyRouter = require("./currencyController");
 const config = require("./config");
 
 const app = express();
-const cors = require("cors");
+var cors = require('cors')
 
 app.use(cors())
 
