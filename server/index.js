@@ -1,20 +1,20 @@
 const express = require("express");
 const currencyRouter = require("./currencyController");
 const config = require("./config");
+const cors = require('cors')
 
 const app = express();
-const cors = require('cors')
 
 
 // // Define allowed origins
 app.use(
   cors({
     origin: [
-      "http://localhost:4200",
-      "https://currency-converter-eta-seven.vercel.app",
-      "https://currency-converter-qaze.vercel.app",
+      "http://localhost:4200",  // Local development
+      "https://currency-converter-eta-seven.vercel.app", // Allowed origin for your frontend
+      "https://currency-converter-qaze.vercel.app" // Another allowed origin
     ],
-    credentials: true, // Include credentials if needed
+    methods: ["GET", "POST"],  // Allowed HTTP methods
   })
 );
 
