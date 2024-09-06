@@ -6,32 +6,26 @@ import { CurrencyConverterComponent } from './components/currency-converter/curr
 import { MaterialModule } from './modules/material.module';
 
 const components = [
-    CurrencyConverterComponent
-  
-  ];
+  CurrencyConverterComponent
+
+];
 @NgModule({
-    declarations: [...components],
-    imports: [
-      CommonModule,
-      RouterModule,
-      FormsModule,
-      ReactiveFormsModule,
-      MaterialModule,
-    
-    ],
-    providers: [],
-    exports: [
-      ...components,
-      RouterModule,
-      FormsModule,
-      MaterialModule,
-      ReactiveFormsModule,
-    ],
-  })
-export class SharedModule {
-//   static forRoot(): any[] | import("@angular/core").Type<any> | import("@angular/core").ModuleWithProviders<{}> {
-//     throw new Error('Method not implemented.');
-//   }
-   
-  }
-  
+  declarations: [...components],
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MaterialModule,
+
+  ],
+  providers: [],
+  exports: [
+    ...components,
+    RouterModule,
+    FormsModule,
+    MaterialModule,
+    ReactiveFormsModule,
+  ],
+})
+export class SharedModule {}

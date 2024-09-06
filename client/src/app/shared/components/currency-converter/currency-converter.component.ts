@@ -1,105 +1,132 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Component, OnInit } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { EndpointService } from "src/app/services/endpoint.service";
 
 @Component({
-  selector: 'app-currency-converter',
-  templateUrl: './currency-converter.component.html',
-  styleUrls: ['./currency-converter.component.scss']
+  selector: "app-currency-converter",
+  templateUrl: "./currency-converter.component.html",
+  styleUrls: ["./currency-converter.component.scss"],
 })
 export class CurrencyConverterComponent implements OnInit {
   currencies: string[] = [];
   conversionForm: FormGroup;
   conversionResult: any;
-  singleCurrency: any = {}; // Store a single currency object
+  singleCurrency: any = {};
   loading: boolean = false;
-  conversionHistory: any[] = []; // Store conversion history
+  conversionHistory: any[] = [];
+  emptyRecords: string = "";
 
-  constructor(private http: HttpClient) {
+  constructor(private endpoint: EndpointService) {
     this.conversionForm = new FormGroup({
-      fromCurrency: new FormControl('USD', Validators.required),
-      toCurrency: new FormControl('EUR', Validators.required),
+      fromCurrency: new FormControl("USD", Validators.required),
+      toCurrency: new FormControl("EUR", Validators.required),
       amount: new FormControl(1, [Validators.required, Validators.min(0.01)]),
     });
   }
 
   ngOnInit(): void {
     this.getCurrencies();
-    this.loadConversionHistory(); // Load conversion history on init
+    this.loadConversionHistory();
   }
 
   getCurrencies(): void {
-    this.http.get('http://localhost:5001/currencies')
-      .subscribe(
-        (response: any) => {
-          this.currencies = Object.keys(response.data);
-          const defaultCurrencyCode = 'USD'; // Use 'USD' or any currency code you want to default to
-          this.singleCurrency = response.data[defaultCurrencyCode];
+    this.endpoint
+      .currency()
+      .getCurrencies()
+      .subscribe({
+        next: (res: any) => {
+          this.currencies = Object.keys(res.data);
+          this.singleCurrency = res.data["USD"];
         },
-        error => {
-          console.error('Error fetching currencies', error);
-        }
-      );
+        error: (error) => {
+          console.log("err", error);
+        },
+      });
   }
 
   convertCurrency(): void {
     if (this.conversionForm.valid) {
       this.loading = true;
       const { fromCurrency, toCurrency, amount } = this.conversionForm.value;
-      this.http.get(`http://localhost:5001/convert?from=${fromCurrency}&to=${toCurrency}&amount=${amount}`)
-        .subscribe(
-          (response: any) => {
-            this.conversionResult = response;
-            this.loading = false;
-
-            // Fetch the currency data for both currencies involved in conversion
-            this.http.get('http://localhost:5001/currencies')
-              .subscribe((response: any) => {
-                const allCurrencies = response.data;
-
-                // Get currency details for both 'fromCurrency' and 'toCurrency'
-                const fromCurrencyDetails = allCurrencies[fromCurrency];
-                const toCurrencyDetails = allCurrencies[toCurrency];
-
-                // Store symbols or any other details needed
-                this.singleCurrency = {
-                  fromSymbol: fromCurrencyDetails?.symbol || '',
-                  toSymbol: toCurrencyDetails?.symbol || ''
-                };
-
-                // Save conversion result in local storage
-                this.saveConversionHistory(fromCurrency, toCurrency, amount, response.convertedAmount, this.singleCurrency.fromSymbol, this.singleCurrency.toSymbol);
-              });
+      this.endpoint
+        .currency()
+        .convertCurrency(fromCurrency, toCurrency, amount)
+        .subscribe({
+          next: (res: any) => {
+            this.conversionResult = res;
+            this.fetchCurrencyDetails(
+              fromCurrency,
+              toCurrency,
+              amount,
+              res.convertedAmount
+            );
           },
-          error => {
-            console.error('Error converting currency', error);
+          error: (error) => {
+            console.error("Error converting currency", error);
             this.loading = false;
-          }
-        );
+          },
+        });
     }
   }
 
-  // Save conversion result in local storage
-  saveConversionHistory(fromCurrency: string, toCurrency: string, amount: number, convertedAmount: number, fromSymbol: string, toSymbol: string): void {
+  fetchCurrencyDetails(
+    fromCurrency: string,
+    toCurrency: string,
+    amount: number,
+    convertedAmount: number
+  ): void {
+    this.endpoint
+      .currency()
+      .getCurrencies()
+      .subscribe({
+        next: (res: any) => {
+          const allCurrencies = res.data;
+          this.singleCurrency = {
+            fromSymbol: allCurrencies[fromCurrency]?.symbol || "",
+            toSymbol: allCurrencies[toCurrency]?.symbol || "",
+          };
+          this.saveConversionHistory(
+            fromCurrency,
+            toCurrency,
+            amount,
+            convertedAmount
+          );
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error("Error converting currency", error);
+        },
+      });
+  }
+
+  saveConversionHistory(
+    fromCurrency: string,
+    toCurrency: string,
+    amount: number,
+    convertedAmount: number
+  ): void {
     const conversionRecord = {
       fromCurrency,
       toCurrency,
       amount,
       convertedAmount,
-      fromSymbol,
-      toSymbol,
-      date: new Date().toLocaleString() // Store date and time
+      ...this.singleCurrency,
+      date: new Date().toLocaleString(),
     };
-
-    this.conversionHistory.push(conversionRecord); // Add to history array
-    localStorage.setItem('conversionHistory', JSON.stringify(this.conversionHistory)); // Save to local storage
+    this.conversionHistory.push(conversionRecord);
+    localStorage.setItem(
+      "conversionHistory",
+      JSON.stringify(this.conversionHistory)
+    );
   }
 
-  // Load conversion history from local storage
   loadConversionHistory(): void {
-    const history = localStorage.getItem('conversionHistory');
-    if (history) {
-      this.conversionHistory = JSON.parse(history);
-    }
+    const history = localStorage.getItem("conversionHistory");
+    this.conversionHistory = history ? JSON.parse(history) : [];
+    this.emptyRecords =
+      this.conversionHistory.length === 0
+        ? "There is no conversion history right now"
+        : "";
   }
 }

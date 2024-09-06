@@ -1,3 +1,13 @@
+// src/environments/environment.prod.ts
 export const environment = {
-  production: true
+  appName: "currency_converter",
+  production: true,
+  server: {
+    self: {
+      HOST: "https://example.com",
+      getUrl() {
+        return `${this.HOST}`;
+      },
+    },
+  },
 };
