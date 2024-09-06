@@ -8,7 +8,11 @@ const app = express();
 // app.use(cors());
 app.use(
   cors({
-    origin: ["http://localhost:4200", "https://currency-converter-eta-seven.vercel.app"],
+    origin: [
+      "http://localhost:4200", 
+      "https://currency-converter-eta-seven.vercel.app",
+      "https://currency-converter-qaze.vercel.app"
+    ],
   })
 );
 app.use('/', currencyRouter);
