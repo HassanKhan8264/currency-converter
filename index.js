@@ -27,6 +27,7 @@ const serveIndexHtml = (req, res) => {
   });
 };
 
+app.get("/", serveIndexHtml); // Serve index.html for any route not handled by API
 app.get("*", serveIndexHtml); // Serve index.html for any route not handled by API
 
 // Start the server
