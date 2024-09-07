@@ -5,6 +5,7 @@ const cors = require("cors");
 const path = require("path");
 const app = express();
 const fs = require('fs');
+
 // Enable CORS
 app.use(cors());
 
@@ -15,20 +16,21 @@ app.use("/", currencyRouter);
 const angularAppPath = path.join(__dirname, "./client/dist");
 app.use(express.static(angularAppPath));
 
-
 // Serve index.html for all other routes to handle client-side routing
-const serveIndexHtml = (req, res) => {
-  const filePath = path.join(angularAppPath, "index.html");
-  fs.readFile(filePath, 'utf8', (err, htmlData) => {
-    if (err) {
-      return res.status(500).send('An error occurred while loading the page.');
-    }
-  });
+const serveIndexHtml = async (req, res) => {
+  try {
+    const filePath = path.join(angularAppPath, "index.html");
+    const htmlData = await fs.promises.readFile(filePath, 'utf8');
+    res.send(htmlData);
+  } catch (err) {
+    console.error('Error reading index.html:', err);
+    res.status(500).send('An error occurred while loading the page.');
+  }
 };
 
 
-app.get("/", serveIndexHtml); // Serve index.html for any route not handled by API
-app.get("*", serveIndexHtml); // Serve index.html for any route not handled by API
+app.get("/", serveIndexHtml); // Serve index.html for root route
+app.get("*", serveIndexHtml); // Serve index.html for any other route
 
 // Start the server
 app.listen(config.PORT, () => {
