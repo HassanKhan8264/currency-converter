@@ -4,7 +4,7 @@ const config = require("./server/config");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-
+const fs = require('fs');
 // Enable CORS
 app.use(cors());
 
@@ -19,9 +19,9 @@ app.use(express.static(angularAppPath));
 // Serve index.html for all other routes to handle client-side routing
 const serveIndexHtml = (req, res) => {
   const filePath = path.join(angularAppPath, "index.html");
-  res.sendFile(filePath, (err) => {
+  fs.readFile(filePath, 'utf8', (err, htmlData) => {
     if (err) {
-      res.status(500).send(err); // Handle any errors sending the file
+      return res.status(500).send('An error occurred while loading the page.');
     }
   });
 };
