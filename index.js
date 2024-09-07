@@ -12,7 +12,7 @@ app.use(cors());
 app.use("/", currencyRouter);
 
 // Serve the Angular application
-const angularAppPath = path.join(__dirname, "client/dist");
+const angularAppPath = path.join(__dirname, "./client/dist");
 app.use(express.static(angularAppPath));
 
 // Serve index.html for all other routes
