@@ -6,13 +6,7 @@ const cors = require('cors')
 const app = express();
 
 
-// // Define allowed origins
-const corsOptions = {
-  origin: ['http://localhost:4200',],
-  optionsSuccessStatus: 200
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 app.use("/", currencyRouter);
 
 app.listen(config.PORT, () => {

@@ -117,14 +117,15 @@ export class CurrencyConverterComponent implements OnInit {
     this.conversionHistory.push(conversionRecord);
     localStorage.setItem(
       "conversionHistory",
-      JSON.stringify(this.conversionHistory)
+      JSON.stringify(this.conversionHistory.reverse())
     );
   }
 
   loadConversionHistory(): void {
     const history = localStorage.getItem("conversionHistory");
+  
+    this.conversionHistory.reverse()
     this.conversionHistory = history ? JSON.parse(history) : [];
-    this.emptyRecords =
       this.conversionHistory.length === 0
         ? "There is no conversion history right now"
         : "";
