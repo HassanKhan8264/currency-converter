@@ -13,19 +13,19 @@ app.use("/", currencyRouter);
 
 // Correct path to Angular application
 const angularAppPath = path.join(__dirname, "./client/dist");
-
-// Serve static files from Angular build directory
 app.use(express.static(angularAppPath));
+
 
 // Serve index.html for all other routes to handle client-side routing
 const serveIndexHtml = (req, res) => {
   const filePath = path.join(angularAppPath, "index.html");
-  res.send(filePath, (err) => {
+  res.sendFile(filePath, (err) => {
     if (err) {
       res.status(500).send(err); // Handle any errors sending the file
     }
   });
 };
+
 
 app.get("/", serveIndexHtml); // Serve index.html for any route not handled by API
 app.get("*", serveIndexHtml); // Serve index.html for any route not handled by API
