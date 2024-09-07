@@ -17,7 +17,7 @@
         ]
       },
       {
-        "source": "/https://currency-converter-qaze.vercel.app/(.*)",
+        "source": "https://currency-converter-qaze.vercel.app/(.*)",
         "headers": [
           { "key": "Access-Control-Allow-Origin", "value": "*" }
         ]
