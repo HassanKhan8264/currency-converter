@@ -12,14 +12,14 @@ app.use(cors());
 app.use("/", currencyRouter);
 
 // Correct path to Angular application
-const angularAppPath = path.join(__dirname, "./client/dist/currency_converter");
+const angularAppPath = path.join(__dirname, "./client/dist/currency_converter/index.html");
 
 // Serve static files from Angular build directory
 app.use(express.static(angularAppPath));
 
 // Serve index.html for all other routes to handle client-side routing
 const serveIndexHtml = (req, res) => {
-  const filePath = path.join(angularAppPath, "index.html");
+  const filePath = path.join(angularAppPath);
   res.sendFile(filePath); // Correctly send index.html
 };
 
