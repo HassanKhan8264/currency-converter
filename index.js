@@ -17,15 +17,15 @@ const angularAppPath = path.join(__dirname, "./client/dist");
 app.use(express.static(angularAppPath));
 
 // Serve index.html for all other routes to handle client-side routing
-const serveIndexHtml = async (req, res) => {
-  try {
-    const filePath = path.join(angularAppPath, "index.html");
-    const htmlData = await fs.promises.readFile(filePath, 'utf8');
-    res.send(htmlData);
-  } catch (err) {
-    console.error('Error reading index.html:', err);
-    res.status(500).send('An error occurred while loading the page.');
-  }
+const serveIndexHtml = (req, res) => {
+  const filePath = path.join(angularAppPath, "index.html");
+  fs.readFile(filePath, 'utf8', (err, htmlData) => {
+    if (err) {
+      console.error('Error reading index.html:', err);
+      return res.status(500).send('An error occurred while loading the page.');
+    }
+    res.send(htmlData); // Send the HTML content back to the client
+  });
 };
 
 
