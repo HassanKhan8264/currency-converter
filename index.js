@@ -3,8 +3,8 @@ const currencyRouter = require("./server/currencyController");
 const config = require("./server/config");
 const cors = require("cors");
 const path = require("path");
-const app = express();
 const fs = require('fs');
+const app = express();
 
 // Enable CORS
 app.use(cors());
@@ -28,10 +28,12 @@ const serveIndexHtml = (req, res) => {
   });
 };
 
-app.get("/", serveIndexHtml); // Serve index.html for root route
-app.get("*", serveIndexHtml); // Serve index.html for any other route
+// Route to serve index.html
+app.get("/", serveIndexHtml); 
+app.get("*", serveIndexHtml);
 
 // Start the server
-app.listen(config.PORT, () => {
-  console.log(`Server running on port ${config.PORT}`);
+const port = config.PORT || 3000; // Ensure fallback port for Vercel
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
