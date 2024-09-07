@@ -2,9 +2,9 @@
   "name": "my-express-app",
   "version": "1.0.0",
   "description": "currency convertor",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "nodemon serverindex.js",
     "dev:client": "cd client && ng serve"
   },
   "dependencies": {
