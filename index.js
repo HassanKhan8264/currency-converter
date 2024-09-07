@@ -20,7 +20,7 @@ app.use(express.static(angularAppPath));
 // Serve index.html for all other routes to handle client-side routing
 const serveIndexHtml = (req, res) => {
   const filePath = path.join(angularAppPath, "index.html");
-  res.sendFile(filePath, (err) => {
+  res.send(filePath, (err) => {
     if (err) {
       res.status(500).send(err); // Handle any errors sending the file
     }
